@@ -1,5 +1,9 @@
 function _init()
   Cam = init_cam()
+  Enemy_array = {
+    Gen_worm(Get_pxl_from_tile(5), Get_pxl_from_tile(14), Get_pxl_from_tile(7), Get_pxl_from_tile(14)),
+    Gen_worm(Get_pxl_from_tile(2), Get_pxl_from_tile(7), Get_pxl_from_tile(1), Get_pxl_from_tile(7)),
+  }
 
   -- debug info
   X1 = 0
@@ -12,6 +16,10 @@ end
 function _update()
   Player:update()
   Cam:update()
+
+  for i, v in ipairs(Enemy_array) do
+    v:update(i)
+  end
 end
 
 function _draw()
@@ -19,6 +27,10 @@ function _draw()
   map()
   Cam:draw()
   Player:draw()
+
+  for i, v in ipairs(Enemy_array) do
+    v:draw()
+  end
 
   -- debug info
   rect(X1, Y1, X2, Y2, 7)

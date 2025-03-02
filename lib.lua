@@ -25,3 +25,16 @@ function Collide_map(x, y, w, h, flag)
 
   return fget(mget(x1, y1), flag) or fget(mget(x1, y2), flag) or fget(mget(x2, y1), flag) or fget(mget(x2, y2), flag)
 end
+
+function Collide_objects(rect1, rect2)
+  return (
+    rect1.x < rect2.x + rect2.w
+    and rect1.x + rect1.w > rect2.x
+    and rect1.y < rect2.y + rect2.h
+    and rect1.y + rect1.h > rect2.y
+  )
+end
+
+function Get_pxl_from_tile(tilecord)
+  return tilecord * 8
+end

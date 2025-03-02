@@ -54,7 +54,6 @@ function Gen_worm(x, y, end_x, end_y, is_upside_down)
       spr(self.sp, self.x, self.y, 1, 1, self.flipx, self.flipy)
     end,
     move_x = function(self)
-      -- FIX: worms can only move in x direction
       local x = flr(self.x)
       if self.is_moving_to_end then
         if x < self.end_x then
@@ -105,7 +104,9 @@ function Gen_worm(x, y, end_x, end_y, is_upside_down)
     check_player_collision = function(self, index)
       -- FIX: I think something's slightly off with the collision
       if Collide_objects(self, Player) then
-        deli(Enemy_array, index)
+        if abs(Player.dx) > 2 or abs(Player.dy) > 2 then
+          deli(Enemy_array, index)
+        end
       end
     end,
   }

@@ -28,11 +28,12 @@ function _draw()
   cls()
   map()
   Cam:draw()
-  Player:draw()
 
   for i, v in ipairs(Enemy_array) do
     v:draw()
   end
+
+  Player:draw()
 
   -- debug info
   rect(X1, Y1, X2, Y2, 7)

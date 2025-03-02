@@ -6,6 +6,7 @@ function Hanging_state:update()
   self.isRunning = false
 
   if btn(4) then
+    -- FIX: holding left or right lets you beat out gravity and fly
     if self.web.angle > 90 and self.web.angle < 270 then
       self.web.dangle += Gravity * (270 - self.web.angle) / 40
     elseif self.web.angle == 270 then
@@ -23,6 +24,7 @@ function Hanging_state:update()
       self.web.distance += 1
     end
 
+    -- BUG: when dist is too large, arc becomes v-shaped
     local dist_mod = self.web.distance / 8
     if btn(0) then
       if self.web.angle > 180 and self.web.angle < 360 then

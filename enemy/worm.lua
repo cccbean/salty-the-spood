@@ -33,8 +33,9 @@ function Gen_worm(x, y, end_x, end_y, is_upside_down)
       self:check_player_collision(index)
     end,
     draw = function(self)
+      local anim_speed = 1 - self.speed
       if self.sp == 30 or self.sp == 31 then
-        if time() - self.anim > 0.4 then
+        if time() - self.anim > anim_speed then
           self.anim = time()
           self.sp += 1
           if self.sp > 31 then
@@ -42,7 +43,7 @@ function Gen_worm(x, y, end_x, end_y, is_upside_down)
           end
         end
       else
-        if time() - self.anim > 0.4 then
+        if time() - self.anim > anim_speed then
           self.anim = time()
           self.sp += 1
           if self.sp > 15 then

@@ -5,6 +5,7 @@ function _init()
     Gen_worm(Get_pxl_from_tile(2), Get_pxl_from_tile(7), Get_pxl_from_tile(1), Get_pxl_from_tile(7), false),
     Gen_worm(Get_pxl_from_tile(13), Get_pxl_from_tile(13), Get_pxl_from_tile(13), Get_pxl_from_tile(10), false),
     Gen_worm(Get_pxl_from_tile(2), Get_pxl_from_tile(9), Get_pxl_from_tile(1), Get_pxl_from_tile(9), true),
+    Gen_fly(Get_pxl_from_tile(5), Get_pxl_from_tile(11), Get_pxl_from_tile(7), Get_pxl_from_tile(11)),
   }
 
   -- debug info

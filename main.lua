@@ -1,8 +1,10 @@
 function _init()
   Cam = init_cam()
   Enemy_array = {
-    Gen_worm(Get_pxl_from_tile(5), Get_pxl_from_tile(14), Get_pxl_from_tile(7), Get_pxl_from_tile(14)),
-    Gen_worm(Get_pxl_from_tile(2), Get_pxl_from_tile(7), Get_pxl_from_tile(1), Get_pxl_from_tile(7)),
+    Gen_worm(Get_pxl_from_tile(5), Get_pxl_from_tile(14), Get_pxl_from_tile(7), Get_pxl_from_tile(14), false),
+    Gen_worm(Get_pxl_from_tile(2), Get_pxl_from_tile(7), Get_pxl_from_tile(1), Get_pxl_from_tile(7), false),
+    Gen_worm(Get_pxl_from_tile(13), Get_pxl_from_tile(13), Get_pxl_from_tile(13), Get_pxl_from_tile(10), false),
+    Gen_worm(Get_pxl_from_tile(2), Get_pxl_from_tile(9), Get_pxl_from_tile(1), Get_pxl_from_tile(9), true),
   }
 
   -- debug info

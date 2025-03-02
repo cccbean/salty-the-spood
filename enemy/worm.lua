@@ -1,8 +1,16 @@
-function Gen_worm(x, y, end_x, end_y)
+function Gen_worm(x, y, end_x, end_y, is_upside_down)
+  local is_moving_x = (x ~= end_x)
+  local sp
+  if is_moving_x then
+    sp = 30
+  else
+    sp = 14
+  end
+
   return {
-    sp = 30,
+    sp = sp,
     flipx = false,
-    flipy = false,
+    flipy = is_upside_down,
     anim = 0,
     x = x,
     y = y,
@@ -14,24 +22,39 @@ function Gen_worm(x, y, end_x, end_y)
     end_x = end_x,
     end_y = end_y,
     is_moving_to_end = true,
+    is_moving_x = is_moving_x,
     update = function(self, index)
-      self:move()
+      if self.is_moving_x then
+        self:move_x()
+      else
+        self:move_y()
+      end
+
       self:check_player_collision(index)
     end,
     draw = function(self)
-      if time() - self.anim > 0.4 then
-        self.anim = time()
-        self.sp += 1
-        if self.sp > 31 then
-          self.sp = 30
+      if self.sp == 30 or self.sp == 31 then
+        if time() - self.anim > 0.4 then
+          self.anim = time()
+          self.sp += 1
+          if self.sp > 31 then
+            self.sp = 30
+          end
+        end
+      else
+        if time() - self.anim > 0.4 then
+          self.anim = time()
+          self.sp += 1
+          if self.sp > 15 then
+            self.sp = 14
+          end
         end
       end
 
       spr(self.sp, self.x, self.y, 1, 1, self.flipx, self.flipy)
     end,
-    move = function(self)
-      -- TODO: this can be refactored for sure, waiting to see how this will tie in to
-      --       other entities
+    move_x = function(self)
+      -- FIX: worms can only move in x direction
       local x = flr(self.x)
       if self.is_moving_to_end then
         if x < self.end_x then
@@ -55,7 +78,32 @@ function Gen_worm(x, y, end_x, end_y)
         end
       end
     end,
+    move_y = function(self)
+      local y = flr(self.y)
+      if self.is_moving_to_end then
+        if y < self.end_y then
+          self.y += self.speed
+          self.flipy = true
+        elseif y > self.end_y then
+          self.y -= self.speed
+          self.flipy = false
+        else
+          self.is_moving_to_end = false
+        end
+      else
+        if y < self.start_y then
+          self.y += self.speed
+          self.flipy = true
+        elseif y > self.start_y then
+          self.y -= self.speed
+          self.flipy = false
+        else
+          self.is_moving_to_end = true
+        end
+      end
+    end,
     check_player_collision = function(self, index)
+      -- FIX: I think something's slightly off with the collision
       if Collide_objects(self, Player) then
         deli(Enemy_array, index)
       end

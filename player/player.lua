@@ -41,8 +41,41 @@ Gravity = 0.7
 Friction = 0.7
 
 function Player:update()
+  -- debug
+  if btnp(5) and btnp(4) then
+    self:death()
+  end
+  --
+
   self.state.update(self)
   self:move()
+end
+
+function Player:draw()
+  self.state.animate(self)
+
+  spr(self.sp, self.x, self.y, 1, 1, self.flipx, self.flipy)
+
+  -- FIX: better web animation so that web can't be attached to nothing
+  if self.web.isVisible then
+    line(self.x, self.y, self.web.x, self.web.y, 6)
+  end
+
+  -- debug info
+  rect(self.x, self.y, self.x, self.y, 8)
+  rect(self.web.x, self.web.y, self.web.x, self.web.y, 7)
+  --
+end
+
+function Player:death()
+  self.x = 8
+  self.y = 8 * 14
+  self.flipx = false
+  self.flipy = false
+  self.state = Walking_state
+  self.anim = 0
+  self.isRunning = false
+  self.web.isVisible = false
 end
 
 function Player:handle_hor_input(mult)
@@ -152,17 +185,4 @@ function Player:update_is_running()
   else
     self.isRunning = true
   end
-end
-
-function Player:draw()
-  self.state.animate(self)
-
-  spr(self.sp, self.x, self.y, 1, 1, self.flipx, self.flipy)
-
-  -- FIX: better web animation so that web can't be attached to nothing
-  if self.web.isVisible then
-    line(self.x, self.y, self.web.x, self.web.y, 6)
-  end
-  rect(self.x, self.y, self.x, self.y, 8)
-  rect(self.web.x, self.web.y, self.web.x, self.web.y, 7)
 end

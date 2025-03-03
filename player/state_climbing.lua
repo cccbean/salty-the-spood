@@ -7,14 +7,26 @@ function Climbing_state:update()
   if self.flipx then
     -- TODO: check collision for other block times
     if not Collide_map(self.x - 1, self.y, self.w, self.h, Enum_flag.ground) then
-      self.state = Air_state
-      return
+      if self.dy < 0 then
+        self.dx -= 1
+        self.state = Walking_state
+        return
+      else
+        self.state = Air_state
+        return
+      end
     end
   else
     -- TODO: check collision for other block times
     if not Collide_map(self.x + 1, self.y, self.w, self.h, Enum_flag.ground) then
-      self.state = Air_state
-      return
+      if self.dy < 0 then
+        self.dx += 1
+        self.state = Walking_state
+        return
+      else
+        self.state = Air_state
+        return
+      end
     end
   end
 

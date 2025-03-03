@@ -159,7 +159,10 @@ function Player:draw()
 
   spr(self.sp, self.x, self.y, 1, 1, self.flipx, self.flipy)
 
+  -- FIX: better web animation so that web can't be attached to nothing
   if self.web.isVisible then
     line(self.x, self.y, self.web.x, self.web.y, 6)
   end
+  rect(self.x, self.y, self.x, self.y, 8)
+  rect(self.web.x, self.web.y, self.web.x, self.web.y, 7)
 end

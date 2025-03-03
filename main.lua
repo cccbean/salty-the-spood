@@ -37,7 +37,7 @@ function _draw()
   Player:draw()
 
   -- debug info
-  rect(X1, Y1, X2, Y2, 7)
+  -- rect(X1, Y1, X2, Y2, 7)
   print("x = " .. Player.x, Cam.x, Cam.y, 7)
   print("y = " .. Player.y)
   print("dx = " .. Player.dx)

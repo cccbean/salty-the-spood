@@ -5,16 +5,19 @@ Walking_state = {
 function Walking_state:update()
   self.dx *= Friction
 
-  -- TODO: update with other collision blocks
   if self.flipy then
     if not Collide_map(self.x, self.y - 1, self.w, self.h, Enum_flag.ground) then
       self.state = Air_state
       return
+    elseif Collide_map(self.x, self.y - 1, self.w, self.h, Enum_flag.hazard) then
+      self:death()
     end
   else
     if not Collide_map(self.x, self.y + 1, self.w, self.h, Enum_flag.ground) then
       self.state = Air_state
       return
+    elseif Collide_map(self.x, self.y + 1, self.w, self.h, Enum_flag.hazard) then
+      self:death()
     end
   end
 

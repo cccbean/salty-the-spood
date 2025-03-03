@@ -4,8 +4,8 @@ Climbing_state = {
 
 function Climbing_state:update()
   self.dy *= Friction
+
   if self.flipx then
-    -- TODO: check collision for other block times
     if not Collide_map(self.x - 1, self.y, self.w, self.h, Enum_flag.ground) then
       if self.dy < 0 then
         self.dx -= 1
@@ -15,9 +15,10 @@ function Climbing_state:update()
         self.state = Air_state
         return
       end
+    elseif Collide_map(self.x - 1, self.y, self.w, self.h, Enum_flag.hazard) then
+      self:death()
     end
   else
-    -- TODO: check collision for other block times
     if not Collide_map(self.x + 1, self.y, self.w, self.h, Enum_flag.ground) then
       if self.dy < 0 then
         self.dx += 1
@@ -27,6 +28,8 @@ function Climbing_state:update()
         self.state = Air_state
         return
       end
+    elseif Collide_map(self.x + 1, self.y, self.w, self.h, Enum_flag.hazard) then
+      self:death()
     end
   end
 

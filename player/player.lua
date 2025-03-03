@@ -1,12 +1,12 @@
 Enum_flag = {
   solid = 0,
   hazard = 1,
-  bouncy = 2,
 }
 
+-- TODO: add checkpoints
 Player = {
   x = 8,
-  y = 8 * 14,
+  y = 8 * 15 * 2,
   w = 8,
   h = 8,
   dx = 0,
@@ -134,10 +134,7 @@ function Player:move()
   if move_x ~= 0 then
     local sign_x = sgn(move_x)
     while move_x ~= 0 do
-      if not Collide_map(self.x + sign_x, self.y, self.w, self.h, Enum_flag.solid) then
-        self.x += sign_x
-        move_x -= sign_x
-      else
+      if Collide_map(self.x + sign_x, self.y, self.w, self.h, Enum_flag.solid) then
         self.dx = 0
         self.dy = 0
         self.web.dangle = 0
@@ -150,6 +147,11 @@ function Player:move()
           self.flipx = true
         end
         break
+      elseif Collide_map(self.x + sign_x, self.y, self.w, self.h, Enum_flag.hazard) then
+        self:death()
+      else
+        self.x += sign_x
+        move_x -= sign_x
       end
     end
   end
@@ -158,10 +160,7 @@ function Player:move()
   if move_y ~= 0 then
     local sign_y = sgn(move_y)
     while move_y ~= 0 do
-      if not Collide_map(self.x, self.y + sign_y, self.w, self.h, Enum_flag.solid) then
-        self.y += sign_y
-        move_y -= sign_y
-      else
+      if Collide_map(self.x, self.y + sign_y, self.w, self.h, Enum_flag.solid) then
         -- self.dx = 0
         self.dy = 0
         self.web.dangle = 0
@@ -174,6 +173,11 @@ function Player:move()
           self.flipy = true
         end
         break
+      elseif Collide_map(self.x, self.y + sign_y, self.w, self.h, Enum_flag.hazard) then
+        self:death()
+      else
+        self.y += sign_y
+        move_y -= sign_y
       end
     end
   end

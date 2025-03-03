@@ -1,4 +1,10 @@
-function Gen_worm(x, y, end_x, end_y, is_upside_down)
+-- TODO: add pink worm option
+function Gen_worm(tilex, tiley, tile_end_x, tile_end_y, is_upside_down)
+  local x = Get_pxl_from_tile(tilex)
+  local y = Get_pxl_from_tile(tiley)
+  local end_x = Get_pxl_from_tile(tile_end_x)
+  local end_y = Get_pxl_from_tile(tile_end_y)
+
   local is_moving_x = (x ~= end_x)
   local sp
   if is_moving_x then
@@ -7,7 +13,7 @@ function Gen_worm(x, y, end_x, end_y, is_upside_down)
     sp = 14
   end
 
-  return {
+  local worm = {
     sp = sp,
     flipx = false,
     flipy = is_upside_down,
@@ -111,4 +117,6 @@ function Gen_worm(x, y, end_x, end_y, is_upside_down)
       end
     end,
   }
+
+  add(Enemy_array, worm)
 end

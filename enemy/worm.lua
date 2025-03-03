@@ -1,5 +1,7 @@
 -- TODO: add pink worm option
 function Gen_worm(tilex, tiley, tile_end_x, tile_end_y, is_upside_down)
+  Bug_count:inc_total()
+
   local x = Get_pxl_from_tile(tilex)
   local y = Get_pxl_from_tile(tiley)
   local end_x = Get_pxl_from_tile(tile_end_x)
@@ -112,6 +114,7 @@ function Gen_worm(tilex, tiley, tile_end_x, tile_end_y, is_upside_down)
       -- FIX: I think something's slightly off with the collision
       if Collide_objects(self, Player) then
         if abs(Player.dx) > 2 or abs(Player.dy) > 2 then
+          Bug_count:inc_hunted()
           deli(Enemy_array, index)
         end
       end

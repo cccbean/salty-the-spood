@@ -1,5 +1,18 @@
+-- TODO: check progress menuitem to check bug count
 function _init()
+  Bug_count = {
+    hunted = 0,
+    total = 0,
+    inc_hunted = function(self)
+      self.hunted += 1
+    end,
+    inc_total = function(self)
+      self.total += 1
+    end,
+  }
+
   Cam = init_cam()
+
   Enemy_array = {}
   -- first map
   Gen_worm(10, 30, 12, 30, false)

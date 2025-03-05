@@ -1,23 +1,13 @@
--- TODO: check progress menuitem to check bug count
 function _init()
-  Bug_count = {
-    hunted = 0,
-    total = 0,
-    inc_hunted = function(self)
-      self.hunted += 1
-    end,
-    inc_total = function(self)
-      self.total += 1
-    end,
-  }
-
   Cam = init_cam()
 
   Enemy_array = {}
-  -- first map
-  Gen_worm(10, 30, 12, 30, false)
-  Gen_worm(5, 25, 3, 25, false)
-  Gen_worm(9, 20, 10, 20, true)
+  -- level 1
+  Worm.gen_ground_worm({ { 10, 30 }, { 12, 30 } }, Worm.enum_color.pink)
+  Worm.gen_ground_worm({ { 3, 25 }, { 5, 25 } }, Worm.enum_color.green)
+  Worm.gen_ceiling_worm({ { 9, 20 }, { 10, 20 } }, Worm.enum_color.blue)
+  Worm.gen_left_climbing_worm({ { 1, 23 }, { 1, 19 } }, Worm.enum_color.yellow)
+  Worm.gen_right_climbing_worm({ { 13, 19 }, { 13, 17 } }, Worm.enum_color.green)
   --
 
   -- debug info
@@ -35,6 +25,10 @@ function _update()
   for i, v in ipairs(Enemy_array) do
     v:update(i)
   end
+
+  -- debug info
+  -- printh(Bug_count.hunted .. " " .. Bug_count.total)
+  --
 end
 
 function _draw()

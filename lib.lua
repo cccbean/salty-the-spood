@@ -38,3 +38,14 @@ end
 function Get_pxl_from_tile(tilecord)
   return tilecord * 8
 end
+
+function Animation_player(self)
+  local anim_speed = 1 - self.speed
+  if time() - self.anim > anim_speed then
+    self.anim = time()
+    self.sp += 1
+    if self.sp > self.end_sp then
+      self.sp = self.start_sp
+    end
+  end
+end

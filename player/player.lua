@@ -76,6 +76,8 @@ function Player:death()
   self.anim = 0
   self.isRunning = false
   self.web.isVisible = false
+
+  Deathless_run = false
 end
 
 function Player:handle_hor_input(mult)
@@ -146,6 +148,7 @@ function Player:move()
         else
           self.flipx = true
         end
+
         break
       elseif Collide_map(self.x + sign_x, self.y, self.w, self.h, Enum_flag.hazard) then
         self:death()

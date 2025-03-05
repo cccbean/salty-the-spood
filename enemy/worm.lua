@@ -1,125 +1,221 @@
--- TODO: add pink worm option
-function Gen_worm(tilex, tiley, tile_end_x, tile_end_y, is_upside_down)
-  Bug_count:inc_total()
+Worm = {
+  enum_color = {
+    green = 0,
+    pink = 1,
+    yellow = 2,
+    blue = 3,
+  },
+  animate = function(self)
+    local anim_speed = 1 - self.speed
+    if time() - self.anim > anim_speed then
+      self.anim = time()
+      self.sp += 1
+      if self.sp > self.end_sp then
+        self.sp = self.start_sp
+      end
+    end
+  end,
+  draw_green_worm = function(self)
+    Worm.animate(self)
+    spr(self.sp, self.x, self.y, 1, 1, self.flipx, self.flipy)
+  end,
+  draw_pink_worm = function(self)
+    Worm.animate(self)
+    pal({ [11] = 15, [3] = 14 })
+    spr(self.sp, self.x, self.y, 1, 1, self.flipx, self.flipy)
+    pal()
+  end,
+  draw_blue_worm = function(self)
+    Worm.animate(self)
+    pal({ [11] = 12, [3] = 3 })
+    spr(self.sp, self.x, self.y, 1, 1, self.flipx, self.flipy)
+    pal()
+  end,
+  draw_yellow_worm = function(self)
+    Worm.animate(self)
+    pal({ [11] = 10, [3] = 9 })
+    spr(self.sp, self.x, self.y, 1, 1, self.flipx, self.flipy)
+    pal()
+  end,
+  assign_draw_func = function(enum_worm_color)
+    if enum_worm_color == Worm.enum_color.pink then
+      return Worm.draw_pink_worm
+    elseif enum_worm_color == Worm.enum_color.yellow then
+      return Worm.draw_yellow_worm
+    elseif enum_worm_color == Worm.enum_color.blue then
+      return Worm.draw_blue_worm
+    else
+      return Worm.draw_green_worm
+    end
+  end,
+  update = function(self, index)
+    self:move()
+    Enemy.check_player_collision(self, index)
+  end,
+  move = function(self)
+    local target_x = self.target_queue[self.target_index].x
+    local x = flr(self.x)
+    if x < target_x then
+      self.x += self.speed
+      self.flipx = false
+    elseif x > target_x then
+      self.x -= self.speed
+      self.flipx = true
+    end
 
-  local x = Get_pxl_from_tile(tilex)
-  local y = Get_pxl_from_tile(tiley)
-  local end_x = Get_pxl_from_tile(tile_end_x)
-  local end_y = Get_pxl_from_tile(tile_end_y)
+    local target_y = self.target_queue[self.target_index].y
+    local y = flr(self.y)
+    if y < target_y then
+      self.y += self.speed
+      self.flipy = true
+    elseif y > target_y then
+      self.y -= self.speed
+      self.flipy = false
+    end
 
-  local is_moving_x = (x ~= end_x)
-  local sp
-  if is_moving_x then
-    sp = 30
-  else
-    sp = 14
-  end
-
-  local worm = {
-    sp = sp,
-    flipx = false,
-    flipy = is_upside_down,
-    anim = 0,
-    x = x,
-    y = y,
-    w = 8,
-    h = 4,
-    speed = rnd({ 0.4, 0.5, 0.6 }),
-    start_x = x,
-    start_y = y,
-    end_x = end_x,
-    end_y = end_y,
-    is_moving_to_end = true,
-    is_moving_x = is_moving_x,
-    update = function(self, index)
-      if self.is_moving_x then
-        self:move_x()
+    if x == target_x and y == target_y then
+      if self.target_index == #self.target_queue then
+        self.target_index = 1
       else
-        self:move_y()
+        self.target_index += 1
       end
+    end
+  end,
+  gen_ground_worm = function(tile_target_queue, enum_worm_color)
+    Bug_count:inc_total()
 
-      self:check_player_collision(index)
-    end,
-    draw = function(self)
-      local anim_speed = 1 - self.speed
-      if self.sp == 30 or self.sp == 31 then
-        if time() - self.anim > anim_speed then
-          self.anim = time()
-          self.sp += 1
-          if self.sp > 31 then
-            self.sp = 30
-          end
-        end
-      else
-        if time() - self.anim > anim_speed then
-          self.anim = time()
-          self.sp += 1
-          if self.sp > 15 then
-            self.sp = 14
-          end
-        end
-      end
+    local draw_func = Worm.assign_draw_func(enum_worm_color)
 
-      spr(self.sp, self.x, self.y, 1, 1, self.flipx, self.flipy)
-    end,
-    move_x = function(self)
-      local x = flr(self.x)
-      if self.is_moving_to_end then
-        if x < self.end_x then
-          self.x += self.speed
-          self.flipx = false
-        elseif x > self.end_x then
-          self.x -= self.speed
-          self.flipx = true
-        else
-          self.is_moving_to_end = false
-        end
-      else
-        if x < self.start_x then
-          self.x += self.speed
-          self.flipx = false
-        elseif x > self.start_x then
-          self.x -= self.speed
-          self.flipx = true
-        else
-          self.is_moving_to_end = true
-        end
-      end
-    end,
-    move_y = function(self)
-      local y = flr(self.y)
-      if self.is_moving_to_end then
-        if y < self.end_y then
-          self.y += self.speed
-          self.flipy = true
-        elseif y > self.end_y then
-          self.y -= self.speed
-          self.flipy = false
-        else
-          self.is_moving_to_end = false
-        end
-      else
-        if y < self.start_y then
-          self.y += self.speed
-          self.flipy = true
-        elseif y > self.start_y then
-          self.y -= self.speed
-          self.flipy = false
-        else
-          self.is_moving_to_end = true
-        end
-      end
-    end,
-    check_player_collision = function(self, index)
-      -- FIX: I think something's slightly off with the collision
-      if Collide_objects(self, Player) then
-        if abs(Player.dx) > 2 or abs(Player.dy) > 2 then
-          Bug_count:inc_hunted()
-          deli(Enemy_array, index)
-        end
-      end
-    end,
-  }
+    local pixel_target_queue = {}
+    for _, tile_point in ipairs(tile_target_queue) do
+      local point = {}
+      point.x = Get_pxl_from_tile(tile_point[1])
+      point.y = Get_pxl_from_tile(tile_point[2]) + 4
+      add(pixel_target_queue, point)
+    end
 
-  add(Enemy_array, worm)
-end
+    local worm = {
+      x = pixel_target_queue[1].x,
+      y = pixel_target_queue[1].y,
+      w = 8,
+      h = 4,
+      speed = rnd({ 0.4, 0.5, 0.6 }),
+      target_index = 2,
+      target_queue = pixel_target_queue,
+      sp = 30,
+      start_sp = 30,
+      end_sp = 31,
+      anim = 0,
+      flipx = false,
+      flipy = false,
+      update = Worm.update,
+      draw = draw_func,
+      move = Worm.move,
+    }
+
+    add(Enemy_array, worm)
+  end,
+  -- FIX: can't collide with ceiling worm
+  gen_ceiling_worm = function(tile_target_queue, enum_worm_color)
+    Bug_count:inc_total()
+
+    local draw_func = Worm.assign_draw_func(enum_worm_color)
+
+    local pixel_target_queue = {}
+    for _, tile_point in ipairs(tile_target_queue) do
+      local point = {}
+      point.x = Get_pxl_from_tile(tile_point[1])
+      point.y = Get_pxl_from_tile(tile_point[2]) - 4
+      add(pixel_target_queue, point)
+    end
+
+    local worm = {
+      x = pixel_target_queue[1].x,
+      y = pixel_target_queue[1].y,
+      w = 8,
+      h = 4,
+      speed = rnd({ 0.4, 0.5, 0.6 }),
+      target_index = 2,
+      target_queue = pixel_target_queue,
+      sp = 30,
+      start_sp = 30,
+      end_sp = 31,
+      anim = 0,
+      flipx = false,
+      flipy = true,
+      update = Worm.update,
+      draw = draw_func,
+      move = Worm.move,
+    }
+
+    add(Enemy_array, worm)
+  end,
+  gen_left_climbing_worm = function(tile_target_queue, enum_worm_color)
+    Bug_count:inc_total()
+
+    local draw_func = Worm.assign_draw_func(enum_worm_color)
+
+    local pixel_target_queue = {}
+    for _, tile_point in ipairs(tile_target_queue) do
+      local point = {}
+      point.x = Get_pxl_from_tile(tile_point[1])
+      point.y = Get_pxl_from_tile(tile_point[2])
+      add(pixel_target_queue, point)
+    end
+
+    local worm = {
+      x = pixel_target_queue[1].x,
+      y = pixel_target_queue[1].y,
+      w = 4,
+      h = 8,
+      speed = rnd({ 0.4, 0.5, 0.6 }),
+      target_index = 2,
+      target_queue = pixel_target_queue,
+      sp = 14,
+      start_sp = 14,
+      end_sp = 15,
+      anim = 0,
+      flipx = true,
+      flipy = false,
+      update = Worm.update,
+      draw = draw_func,
+      move = Worm.move,
+    }
+
+    add(Enemy_array, worm)
+  end,
+  gen_right_climbing_worm = function(tile_target_queue, enum_worm_color)
+    Bug_count:inc_total()
+
+    local draw_func = Worm.assign_draw_func(enum_worm_color)
+
+    local pixel_target_queue = {}
+    for _, tile_point in ipairs(tile_target_queue) do
+      local point = {}
+      point.x = Get_pxl_from_tile(tile_point[1])
+      point.y = Get_pxl_from_tile(tile_point[2])
+      add(pixel_target_queue, point)
+    end
+
+    local worm = {
+      x = pixel_target_queue[1].x,
+      y = pixel_target_queue[1].y,
+      w = 4,
+      h = 8,
+      speed = rnd({ 0.4, 0.5, 0.6 }),
+      target_index = 2,
+      target_queue = pixel_target_queue,
+      sp = 14,
+      start_sp = 14,
+      end_sp = 15,
+      anim = 0,
+      flipx = false,
+      flipy = false,
+      update = Worm.update,
+      draw = draw_func,
+      move = Worm.move,
+    }
+
+    add(Enemy_array, worm)
+  end,
+}

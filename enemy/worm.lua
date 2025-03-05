@@ -1,4 +1,3 @@
--- FIX: collision boxes aren't pixel perfect
 Worm = {
   enum_color = {
     green = 0,
@@ -50,38 +49,10 @@ Worm = {
     end
   end,
   update = function(self, index)
-    self:move()
-    Enemy.check_player_collision(self, index)
-  end,
-  -- FIX: diagonal movement is a bit wonky, may have to do with speed?
-  move = function(self)
-    local target_x = self.target_queue[self.target_index].x
-    local x = flr(self.x)
-    if x < target_x then
-      self.x += self.speed
-      self.flipx = false
-    elseif x > target_x then
-      self.x -= self.speed
-      self.flipx = true
-    end
+    Enemy.move(self)
 
-    local target_y = self.target_queue[self.target_index].y
-    local y = flr(self.y)
-    if y < target_y then
-      self.y += self.speed
-      self.flipy = true
-    elseif y > target_y then
-      self.y -= self.speed
-      self.flipy = false
-    end
-
-    if x == target_x and y == target_y then
-      if self.target_index == #self.target_queue then
-        self.target_index = 1
-      else
-        self.target_index += 1
-      end
-    end
+    local hitbox = self:get_hitbox()
+    Enemy.check_player_collision(hitbox, index)
   end,
   gen_ground_worm = function(tile_target_queue, enum_worm_color)
     Bug_count:inc_total()
@@ -100,7 +71,7 @@ Worm = {
       x = pixel_target_queue[1].x,
       y = pixel_target_queue[1].y,
       w = 8,
-      h = 4,
+      h = 5,
       speed = rnd({ 0.4, 0.5, 0.6 }),
       target_index = 2,
       target_queue = pixel_target_queue,
@@ -113,6 +84,14 @@ Worm = {
       update = Worm.update,
       draw = draw_func,
       move = Worm.move,
+      get_hitbox = function(self)
+        return {
+          x = self.x,
+          y = self.y + 3,
+          w = self.w,
+          h = self.h,
+        }
+      end,
     }
 
     add(Enemy_array, worm)
@@ -134,7 +113,7 @@ Worm = {
       x = pixel_target_queue[1].x,
       y = pixel_target_queue[1].y,
       w = 8,
-      h = 4,
+      h = 5,
       speed = rnd({ 0.4, 0.5, 0.6 }),
       target_index = 2,
       target_queue = pixel_target_queue,
@@ -147,6 +126,14 @@ Worm = {
       update = Worm.update,
       draw = draw_func,
       move = Worm.move,
+      get_hitbox = function(self)
+        return {
+          x = self.x,
+          y = self.y,
+          w = self.w,
+          h = self.h,
+        }
+      end,
     }
 
     add(Enemy_array, worm)
@@ -167,7 +154,7 @@ Worm = {
     local worm = {
       x = pixel_target_queue[1].x,
       y = pixel_target_queue[1].y,
-      w = 4,
+      w = 5,
       h = 8,
       speed = rnd({ 0.4, 0.5, 0.6 }),
       target_index = 2,
@@ -181,6 +168,14 @@ Worm = {
       update = Worm.update,
       draw = draw_func,
       move = Worm.move,
+      get_hitbox = function(self)
+        return {
+          x = self.x,
+          y = self.y,
+          w = self.w,
+          h = self.h,
+        }
+      end,
     }
 
     add(Enemy_array, worm)
@@ -201,7 +196,7 @@ Worm = {
     local worm = {
       x = pixel_target_queue[1].x,
       y = pixel_target_queue[1].y,
-      w = 4,
+      w = 5,
       h = 8,
       speed = rnd({ 0.4, 0.5, 0.6 }),
       target_index = 2,
@@ -215,6 +210,14 @@ Worm = {
       update = Worm.update,
       draw = draw_func,
       move = Worm.move,
+      get_hitbox = function(self)
+        return {
+          x = self.x + 3,
+          y = self.y,
+          w = self.w,
+          h = self.h,
+        }
+      end,
     }
 
     add(Enemy_array, worm)

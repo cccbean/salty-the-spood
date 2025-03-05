@@ -1,3 +1,4 @@
+-- FIX: collision boxes aren't pixel perfect
 Worm = {
   enum_color = {
     green = 0,
@@ -52,6 +53,7 @@ Worm = {
     self:move()
     Enemy.check_player_collision(self, index)
   end,
+  -- FIX: diagonal movement is a bit wonky, may have to do with speed?
   move = function(self)
     local target_x = self.target_queue[self.target_index].x
     local x = flr(self.x)
@@ -90,7 +92,7 @@ Worm = {
     for _, tile_point in ipairs(tile_target_queue) do
       local point = {}
       point.x = Get_pxl_from_tile(tile_point[1])
-      point.y = Get_pxl_from_tile(tile_point[2]) + 4
+      point.y = Get_pxl_from_tile(tile_point[2])
       add(pixel_target_queue, point)
     end
 
@@ -115,7 +117,6 @@ Worm = {
 
     add(Enemy_array, worm)
   end,
-  -- FIX: can't collide with ceiling worm
   gen_ceiling_worm = function(tile_target_queue, enum_worm_color)
     Bug_count:inc_total()
 
@@ -125,7 +126,7 @@ Worm = {
     for _, tile_point in ipairs(tile_target_queue) do
       local point = {}
       point.x = Get_pxl_from_tile(tile_point[1])
-      point.y = Get_pxl_from_tile(tile_point[2]) - 4
+      point.y = Get_pxl_from_tile(tile_point[2])
       add(pixel_target_queue, point)
     end
 

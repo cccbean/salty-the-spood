@@ -1,8 +1,4 @@
 Fly = {
-  enum_color = {
-    light = 0,
-    dark = 1,
-  },
   animate = function(self)
     local anim_speed = 1 - self.speed
     if time() - self.anim > anim_speed then
@@ -14,6 +10,12 @@ Fly = {
     end
   end,
   update = function(self, index)
+    local dist_to_player = Get_tile_from_pxl(Get_distance(self.x, self.y, Player.x, Player.y))
+    if dist_to_player < 5 then
+      self.speed = self.fast_speed
+    else
+      self.speed = self.slow_speed
+    end
     Enemy.move(self)
 
     local hitbox = self:get_hitbox()
@@ -30,12 +32,16 @@ Fly = {
       add(pixel_target_queue, point)
     end
 
+    local speed = rnd({ 0.4, 0.5, 0.6 })
+
     local fly = {
       x = pixel_target_queue[1].x,
       y = pixel_target_queue[1].y,
       w = 8,
       h = 5,
-      speed = rnd({ 0.4, 0.5, 0.6 }),
+      speed = speed,
+      slow_speed = speed,
+      fast_speed = speed * 3,
       target_index = 2,
       target_queue = pixel_target_queue,
       sp = 62,
@@ -73,12 +79,16 @@ Fly = {
       add(pixel_target_queue, point)
     end
 
+    local speed = rnd({ 0.4, 0.5, 0.6 })
+
     local fly = {
       x = pixel_target_queue[1].x,
       y = pixel_target_queue[1].y,
       w = 8,
       h = 5,
-      speed = rnd({ 0.4, 0.5, 0.6 }),
+      speed = speed,
+      slow_speed = speed,
+      fast_speed = speed * 3,
       target_index = 2,
       target_queue = pixel_target_queue,
       sp = 62,

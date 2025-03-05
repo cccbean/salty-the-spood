@@ -19,9 +19,17 @@ Enemy = {
     if x < target_x then
       self.x += self.speed
       self.flipx = false
+
+      if self.x > target_x then
+        self.x = target_x
+      end
     elseif x > target_x then
       self.x -= self.speed
       self.flipx = true
+
+      if self.x < target_x then
+        self.x = target_x
+      end
     end
 
     local target_y = self.target_queue[self.target_index].y
@@ -29,9 +37,17 @@ Enemy = {
     if y < target_y then
       self.y += self.speed
       self.flipy = true
+
+      if self.y > target_y then
+        self.y = target_y
+      end
     elseif y > target_y then
       self.y -= self.speed
       self.flipy = false
+
+      if self.y < target_y then
+        self.y = target_y
+      end
     end
 
     if x == target_x and y == target_y then

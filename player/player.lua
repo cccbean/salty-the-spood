@@ -4,6 +4,7 @@ Enum_flag = {
 }
 
 -- TODO: add checkpoints
+-- TODO: add get_hitbox method
 Player = {
   x = 8,
   y = 8 * 15 * 2,

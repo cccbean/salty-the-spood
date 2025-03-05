@@ -11,6 +11,8 @@ Enemy = {
   end,
   -- FIX: diagonal movement is a bit wonky, may have to do with speed? it doesn't always happen,
   --      I'm gonna leave it and see how the fly likes it
+  --      OKAY, I think it's bc the animation just looks weird since the sprite is moving
+  --      diagonally so discretely, I wonder why the player doesn't have this issue tho?
   move = function(self)
     local target_x = self.target_queue[self.target_index].x
     local x = flr(self.x)

@@ -1,97 +1,110 @@
-function Gen_fly(x, y, end_x, end_y)
-  local is_moving_x = (x ~= end_x)
+Fly = {
+  enum_color = {
+    light = 0,
+    dark = 1,
+  },
+  animate = function(self)
+    local anim_speed = 1 - self.speed
+    if time() - self.anim > anim_speed then
+      self.anim = time()
+      self.sp += 1
+      if self.sp > self.end_sp then
+        self.sp = self.start_sp
+      end
+    end
+  end,
+  update = function(self, index)
+    Enemy.move(self)
 
-  return {
-    sp = 62,
-    flipx = false,
-    flipy = false,
-    anim = 0,
-    x = x,
-    y = y,
-    w = 8,
-    h = 4,
-    speed = rnd({ 0.4, 0.5, 0.6 }),
-    start_x = x,
-    start_y = y,
-    end_x = end_x,
-    end_y = end_y,
-    is_moving_to_end = true,
-    is_moving_x = is_moving_x,
-    update = function(self, index)
-      if self.is_moving_x then
-        self:move_x()
-      else
-        self:move_y()
-      end
+    local hitbox = self:get_hitbox()
+    Enemy.check_player_collision(hitbox, index)
+  end,
+  gen_light_fly = function(tile_target_queue)
+    Bug_count:inc_total()
 
-      self:check_player_collision(index)
-    end,
-    draw = function(self)
-      if time() - self.anim > 0.4 then
-        self.anim = time()
-        self.sp += 1
-        if self.sp > 63 then
-          self.sp = 62
-        end
-      end
+    local pixel_target_queue = {}
+    for _, tile_point in ipairs(tile_target_queue) do
+      local point = {}
+      point.x = Get_pxl_from_tile(tile_point[1])
+      point.y = Get_pxl_from_tile(tile_point[2])
+      add(pixel_target_queue, point)
+    end
 
-      spr(self.sp, self.x, self.y, 1, 1, self.flipx, self.flipy)
-    end,
-    move_x = function(self)
-      local x = flr(self.x)
-      if self.is_moving_to_end then
-        if x < self.end_x then
-          self.x += self.speed
-          self.flipx = false
-        elseif x > self.end_x then
-          self.x -= self.speed
-          self.flipx = true
-        else
-          self.is_moving_to_end = false
-        end
-      else
-        if x < self.start_x then
-          self.x += self.speed
-          self.flipx = false
-        elseif x > self.start_x then
-          self.x -= self.speed
-          self.flipx = true
-        else
-          self.is_moving_to_end = true
-        end
-      end
-    end,
-    move_y = function(self)
-      local y = flr(self.y)
-      if self.is_moving_to_end then
-        if y < self.end_y then
-          self.y += self.speed
-          self.flipy = true
-        elseif y > self.end_y then
-          self.y -= self.speed
-          self.flipy = false
-        else
-          self.is_moving_to_end = false
-        end
-      else
-        if y < self.start_y then
-          self.y += self.speed
-          self.flipy = true
-        elseif y > self.start_y then
-          self.y -= self.speed
-          self.flipy = false
-        else
-          self.is_moving_to_end = true
-        end
-      end
-    end,
-    check_player_collision = function(self, index)
-      -- FIX: I think something's slightly off with the collision
-      if Collide_objects(self, Player) then
-        if abs(Player.dx) > 2 or abs(Player.dy) > 2 then
-          deli(Enemy_array, index)
-        end
-      end
-    end,
-  }
-end
+    local fly = {
+      x = pixel_target_queue[1].x,
+      y = pixel_target_queue[1].y,
+      w = 8,
+      h = 5,
+      speed = rnd({ 0.4, 0.5, 0.6 }),
+      target_index = 2,
+      target_queue = pixel_target_queue,
+      sp = 62,
+      start_sp = 62,
+      end_sp = 63,
+      anim = 0,
+      flipx = false,
+      flipy = false,
+      update = Fly.update,
+      draw = function(self)
+        Fly.animate(self)
+        spr(self.sp, self.x, self.y, 1, 1, self.flipx, false)
+      end,
+      move = Fly.move,
+      get_hitbox = function(self)
+        return {
+          x = self.x,
+          y = self.y,
+          w = self.w,
+          h = self.h,
+        }
+      end,
+    }
+
+    add(Enemy_array, fly)
+  end,
+  gen_dark_fly = function(tile_target_queue)
+    Bug_count:inc_total()
+
+    local pixel_target_queue = {}
+    for _, tile_point in ipairs(tile_target_queue) do
+      local point = {}
+      point.x = Get_pxl_from_tile(tile_point[1])
+      point.y = Get_pxl_from_tile(tile_point[2])
+      add(pixel_target_queue, point)
+    end
+
+    local fly = {
+      x = pixel_target_queue[1].x,
+      y = pixel_target_queue[1].y,
+      w = 8,
+      h = 5,
+      speed = rnd({ 0.4, 0.5, 0.6 }),
+      target_index = 2,
+      target_queue = pixel_target_queue,
+      sp = 62,
+      start_sp = 62,
+      end_sp = 63,
+      anim = 0,
+      flipx = false,
+      flipy = false,
+      update = Fly.update,
+      draw = function(self)
+        Fly.animate(self)
+        pal({ [4] = 1, [9] = 1 })
+        spr(self.sp, self.x, self.y, 1, 1, self.flipx, false)
+        pal()
+      end,
+      move = Fly.move,
+      get_hitbox = function(self)
+        return {
+          x = self.x,
+          y = self.y,
+          w = self.w,
+          h = self.h,
+        }
+      end,
+    }
+
+    add(Enemy_array, fly)
+  end,
+}

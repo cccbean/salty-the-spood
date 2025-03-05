@@ -4,10 +4,12 @@ function _init()
   Enemy_array = {}
   -- level 1
   Worm.gen_ground_worm({ { 10, 30 }, { 12, 30 } }, Worm.enum_color.pink)
-  Worm.gen_ground_worm({ { 3, 25 }, { 5, 23 } }, Worm.enum_color.green)
+  Worm.gen_ground_worm({ { 3, 25 }, { 5, 25 } }, Worm.enum_color.green)
   Worm.gen_ceiling_worm({ { 9, 20 }, { 10, 20 } }, Worm.enum_color.blue)
   Worm.gen_left_climbing_worm({ { 1, 23 }, { 1, 19 } }, Worm.enum_color.yellow)
   Worm.gen_right_climbing_worm({ { 13, 19 }, { 13, 17 } }, Worm.enum_color.green)
+
+  Fly.gen_dark_fly({ { 7, 25 }, { 10, 23 } })
   --
 
   -- debug info
@@ -22,6 +24,8 @@ function _update()
   Player:update()
   Cam:update()
 
+  -- TODO: add level id to each enemy on gen so that they only get rendered once the
+  --       player gets to that level
   for i, v in ipairs(Enemy_array) do
     v:update(i)
   end

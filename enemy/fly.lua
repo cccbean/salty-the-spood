@@ -1,3 +1,4 @@
+-- TODO: add sound effect when fly speeds up so you can hear the wings buzzing
 Fly = {
   animate = function(self)
     local anim_speed = 1 - self.speed
@@ -55,7 +56,6 @@ Fly = {
         Fly.animate(self)
         spr(self.sp, self.x, self.y, 1, 1, self.flipx, false)
       end,
-      move = Fly.move,
       get_hitbox = function(self)
         return {
           x = self.x,
@@ -104,7 +104,6 @@ Fly = {
         spr(self.sp, self.x, self.y, 1, 1, self.flipx, false)
         pal()
       end,
-      move = Fly.move,
       get_hitbox = function(self)
         return {
           x = self.x,

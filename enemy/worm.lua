@@ -83,7 +83,6 @@ Worm = {
       flipy = false,
       update = Worm.update,
       draw = draw_func,
-      move = Worm.move,
       get_hitbox = function(self)
         return {
           x = self.x,
@@ -125,7 +124,6 @@ Worm = {
       flipy = true,
       update = Worm.update,
       draw = draw_func,
-      move = Worm.move,
       get_hitbox = function(self)
         return {
           x = self.x,
@@ -167,7 +165,6 @@ Worm = {
       flipy = false,
       update = Worm.update,
       draw = draw_func,
-      move = Worm.move,
       get_hitbox = function(self)
         return {
           x = self.x,
@@ -209,7 +206,6 @@ Worm = {
       flipy = false,
       update = Worm.update,
       draw = draw_func,
-      move = Worm.move,
       get_hitbox = function(self)
         return {
           x = self.x + 3,

@@ -139,7 +139,7 @@ function Player:move()
     while move_x ~= 0 do
       if Collide_map(self.x + sign_x, self.y, self.w, self.h, Enum_flag.solid) then
         self.dx = 0
-        self.dy = 0
+        self.dy *= 0.7
         self.web.dangle = 0
         self.state = Climbing_state
         self.web.isVisible = false
@@ -165,7 +165,7 @@ function Player:move()
     local sign_y = sgn(move_y)
     while move_y ~= 0 do
       if Collide_map(self.x, self.y + sign_y, self.w, self.h, Enum_flag.solid) then
-        self.dx *= 0.9
+        self.dx *= 0.7
         self.dy = 0
         self.web.dangle = 0
         self.state = Walking_state

@@ -1,9 +1,9 @@
 Enum_flag = {
   solid = 0,
   hazard = 1,
+  checkpoint = 2,
 }
 
--- TODO: add checkpoints
 -- TODO: add get_hitbox method
 Player = {
   x = 8,
@@ -12,10 +12,10 @@ Player = {
   h = 8,
   dx = 0,
   dy = 0,
-  max_dx = 7,
-  max_dy = 7,
+  max_dx = 8,
+  max_dy = 8,
   acc = 0.4,
-  boost = 7,
+  boost = 6,
   sp = 1,
   flipx = false,
   flipy = false,
@@ -35,6 +35,10 @@ Player = {
       self.y = y
       self.isVisible = isVis
     end,
+  },
+  checkpoint = {
+    x = 8,
+    y = 8 * 15 * 2,
   },
 }
 
@@ -57,9 +61,9 @@ function Player:draw()
 
   spr(self.sp, self.x, self.y, 1, 1, self.flipx, self.flipy)
 
-  -- FIX: better web animation so that web can't be attached to nothing
+  -- FIX: better web animation so that web can't be attached to nothing, the only way to do this is to rework the hanging logic bc it can't just be a visual diff
   if self.web.isVisible then
-    line(self.x, self.y, self.web.x, self.web.y, 6)
+    line(self.x, self.y + 3, self.web.x, self.web.y, 6)
   end
 
   -- debug info
@@ -69,8 +73,8 @@ function Player:draw()
 end
 
 function Player:death()
-  self.x = 8
-  self.y = 8 * 14
+  self.x = Get_pxl_from_tile(self.checkpoint.x)
+  self.y = Get_pxl_from_tile(self.checkpoint.y)
   self.flipx = false
   self.flipy = false
   self.state = Walking_state
@@ -105,9 +109,9 @@ function Player:handle_vert_input(mult)
   end
 end
 
-function Player:jump(x, y)
+function Player:jump(web_x, web_y)
   self.state = Air_state
-  self.web:update(x, y, true)
+  self.web:update(web_x, web_y, true)
 
   if btn(1) and btn(2) then
     self.dx += self.boost - 1
@@ -139,7 +143,7 @@ function Player:move()
     while move_x ~= 0 do
       if Collide_map(self.x + sign_x, self.y, self.w, self.h, Enum_flag.solid) then
         self.dx = 0
-        self.dy *= 0.7
+        self.dy *= 0.6
         self.web.dangle = 0
         self.state = Climbing_state
         self.web.isVisible = false
@@ -154,6 +158,10 @@ function Player:move()
       elseif Collide_map(self.x + sign_x, self.y, self.w, self.h, Enum_flag.hazard) then
         self:death()
       else
+        if Collide_map(self.x + sign_x, self.y, self.w, self.h, Enum_flag.checkpoint) then
+          self.checkpoint.x = Get_tile_from_pxl(self.x + sign_x)
+          self.checkpoint.y = Get_tile_from_pxl(self.y)
+        end
         self.x += sign_x
         move_x -= sign_x
       end
@@ -165,7 +173,7 @@ function Player:move()
     local sign_y = sgn(move_y)
     while move_y ~= 0 do
       if Collide_map(self.x, self.y + sign_y, self.w, self.h, Enum_flag.solid) then
-        self.dx *= 0.7
+        self.dx *= 0.6
         self.dy = 0
         self.web.dangle = 0
         self.state = Walking_state
@@ -180,6 +188,10 @@ function Player:move()
       elseif Collide_map(self.x, self.y + sign_y, self.w, self.h, Enum_flag.hazard) then
         self:death()
       else
+        if Collide_map(self.x, self.y + sign_y, self.w, self.h, Enum_flag.checkpoint) then
+          self.checkpoint.x = Get_tile_from_pxl(self.x)
+          self.checkpoint.y = Get_tile_from_pxl(self.y + sign_y)
+        end
         self.y += sign_y
         move_y -= sign_y
       end

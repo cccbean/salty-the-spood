@@ -1,15 +1,15 @@
 -- TODO: add sound effect when fly speeds up so you can hear the wings buzzing
 Fly = {
-  animate = function(self)
-    local anim_speed = 1 - self.speed
-    if time() - self.anim > anim_speed then
-      self.anim = time()
-      self.sp += 1
-      if self.sp > self.end_sp then
-        self.sp = self.start_sp
-      end
-    end
-  end,
+  -- animate = function(self)
+  --   local anim_speed = 1 - self.speed
+  --   if time() - self.anim > anim_speed then
+  --     self.anim = time()
+  --     self.sp += 1
+  --     if self.sp > self.end_sp then
+  --       self.sp = self.start_sp
+  --     end
+  --   end
+  -- end,
   update = function(self, index)
     local dist_to_player = Get_tile_from_pxl(Get_distance(self.x, self.y, Player.x, Player.y))
     if dist_to_player < 5 then
@@ -53,7 +53,8 @@ Fly = {
       flipy = false,
       update = Fly.update,
       draw = function(self)
-        Fly.animate(self)
+        local anim_speed = 1 - self.speed
+        Enemy.animate(self, anim_speed, 1)
         spr(self.sp, self.x, self.y, 1, 1, self.flipx, false)
       end,
       get_hitbox = function(self)

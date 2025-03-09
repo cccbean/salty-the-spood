@@ -5,23 +5,12 @@ Cricket = {
     left_climbing = 2,
     right_climbing = 3,
   },
-  animate = function(self)
-    local anim_speed = 0.5
-    if time() - self.anim > anim_speed then
-      self.anim = time()
-      self.sp += 2
-      if self.sp > self.end_sp then
-        self.sp = self.start_sp
-      end
-    end
-  end,
   update = function(self, index)
     if self.sp < 40 then
-      printh("me on wall")
       if flr(self.anim % 4) == 1 then
-        self.flipy = false
-      elseif flr(self.anim % 4) == 3 then
         self.flipy = true
+      elseif flr(self.anim % 4) == 3 then
+        self.flipy = false
       end
     else
       if flr(self.anim % 4) == 1 then
@@ -32,8 +21,6 @@ Cricket = {
     end
 
     local detection_box = self:get_detection_box()
-    printh("x " .. detection_box.x .. "y" .. detection_box.y)
-    printh("w " .. detection_box.w .. "h" .. detection_box.h)
     if Collide_objects(detection_box, Player) then
       self.is_moving = true
       self.sp = 44
@@ -85,7 +72,6 @@ Cricket = {
 
     if x == target_x and y == target_y then
       self.is_moving = false
-      self.sp = 40
       self.state = self.target_queue[self.target_index].state
       Cricket.handle_state_change(self)
       if self.target_index == #self.target_queue then
@@ -95,6 +81,22 @@ Cricket = {
       end
     end
   end,
+  get_horizontal_hitbox = function(self)
+    return {
+      x = self.x,
+      y = self.y + 8,
+      w = self.w,
+      h = self.h,
+    }
+  end,
+  get_vertical_hitbox = function(self)
+    return {
+      x = self.x,
+      y = self.y,
+      w = self.w,
+      h = self.h,
+    }
+  end,
   change_to_ground = function(self)
     self.w = 16
     self.h = 8
@@ -102,6 +104,7 @@ Cricket = {
     self.start_sp = 40
     self.end_sp = 42
     self.flipy = false
+    self.get_hitbox = Cricket.get_horizontal_hitbox
   end,
   change_to_ceiling = function(self)
     self.w = 16
@@ -110,6 +113,7 @@ Cricket = {
     self.start_sp = 40
     self.end_sp = 42
     self.flipy = true
+    self.get_hitbox = Cricket.get_horizontal_hitbox
   end,
   change_to_left_climbing = function(self)
     self.w = 8
@@ -118,6 +122,7 @@ Cricket = {
     self.start_sp = 8
     self.end_sp = 10
     self.flipx = true
+    self.get_hitbox = Cricket.get_vertical_hitbox
   end,
   change_to_right_climbing = function(self)
     self.w = 8
@@ -126,6 +131,7 @@ Cricket = {
     self.start_sp = 8
     self.end_sp = 10
     self.flipx = false
+    self.get_hitbox = Cricket.get_vertical_hitbox
   end,
   handle_state_change = function(self)
     if self.state == Cricket.enum_orientation.ground then
@@ -170,7 +176,8 @@ Cricket = {
       update = Cricket.update,
       draw = function(self)
         if not self.is_moving then
-          Cricket.animate(self)
+          local anim_speed = 0.5
+          Enemy.animate(self, anim_speed, 2)
         end
         spr(self.sp, self.x, self.y, 2, 2, self.flipx, self.flipy)
       end,

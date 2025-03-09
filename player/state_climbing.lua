@@ -37,9 +37,9 @@ function Climbing_state:update()
 
   if btnp(5) then
     if self.flipx then
-      self:jump(self.x, self.y + 4)
+      self:jump(self.x, self.y)
     else
-      self:jump(self.x + 7, self.y + 4)
+      self:jump(self.x + 7, self.y)
     end
     return
   end

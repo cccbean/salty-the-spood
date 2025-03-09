@@ -1,8 +1,18 @@
 Enemy = {
+  animate = function(self, anim_speed, sp_inc)
+    if time() - self.anim > anim_speed then
+      self.anim = time()
+      self.sp += sp_inc
+      if self.sp > self.end_sp then
+        self.sp = self.start_sp
+      end
+    end
+  end,
   check_player_collision = function(enemy, enemy_index)
     if Collide_objects(enemy, Player) then
       if abs(Player.dx) > 2 or abs(Player.dy) > 2 then
         Bug_count:inc_hunted()
+        Bug_count.draw_timer = 25
         deli(Enemy_array, enemy_index)
 
         Pacifist_run = false

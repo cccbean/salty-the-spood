@@ -1,8 +1,6 @@
--- TODO: bug count appears in top right corner for a bit when killing an enemy
---       0/Bug_count
---       ?/? (change question marks once game is completed once)
 function _init()
   Cam = init_cam()
+  Level = 1
 
   Enemy_array = {}
   -- level 1
@@ -32,7 +30,7 @@ function _update()
   Player:update()
   Cam:update()
 
-  -- TODO: add level id to each enemy on gen so that they only get rendered once the
+  -- TODO: add level id to each enemy on gen so that they only get updated once the
   --       player gets to that level
   for i, v in ipairs(Enemy_array) do
     v:update(i)
@@ -53,6 +51,7 @@ function _draw()
   end
 
   Player:draw()
+  Bug_count:draw_bug_count()
 
   -- debug info
   -- rect(X1, Y1, X2, Y2, 7)
